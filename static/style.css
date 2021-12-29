@@ -17,7 +17,7 @@ html, body {
 }
 
 .container {
-	width: 1366px;
+	width: 1366px; 
 	margin: 0 auto;
 	min-height: 100%;
 }
