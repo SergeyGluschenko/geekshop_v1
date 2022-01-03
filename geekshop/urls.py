@@ -14,3 +14,7 @@ urlpatterns = [
     path("products/classic", mainapp.products, name="products_classic"),
     path("contact/", mainapp.contact, name="contact"),
 ]
+
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
