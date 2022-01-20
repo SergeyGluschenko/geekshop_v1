@@ -337,14 +337,12 @@ html, body {
 	top: 63px;
 	/*left: 1210px;*/
 	left: 1180px;
+
 	text-decoration: none;
 	color: #555;
 }
 
 .basket span {
-	display: block;
-	margin-left: 30px;
-	width: 150px;
 }
 
 .clearfix:after {
@@ -1447,4 +1445,3 @@ td:first-child {
 
 .slider-product img {
 	width: 100%;
-}

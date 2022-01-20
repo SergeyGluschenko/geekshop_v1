@@ -38,6 +38,7 @@ def get_same_products(hot_product):
 def products(request, pk=None):
     title = "продукты"
     links_menu = ProductCategory.objects.all()
+
     basket = get_basket(request.user)
 
     if pk is not None:
@@ -56,6 +57,7 @@ def products(request, pk=None):
             "basket": basket,
         }
         return render(request, "mainapp/products_list.html", content)
+
     hot_product = get_hot_product()
     same_products = get_same_products(hot_product)
     content = {
@@ -63,6 +65,7 @@ def products(request, pk=None):
         "links_menu": links_menu,
         "same_products": same_products,
         "media_url": settings.MEDIA_URL,
+
         "basket": basket,
         "hot_product": hot_product,
     }
