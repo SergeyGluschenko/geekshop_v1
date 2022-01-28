@@ -1,4 +1,3 @@
-
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
@@ -6,10 +5,8 @@ from django.shortcuts import HttpResponseRedirect, get_object_or_404, render
 from django.template.loader import render_to_string
 from django.urls import reverse
 
-
 from basketapp.models import Basket
 from mainapp.models import Product
-
 
 
 @login_required
@@ -24,7 +21,6 @@ def basket(request):
 def basket_add(request, pk):
     if "login" in request.META.get("HTTP_REFERER"):
         return HttpResponseRedirect(reverse("products:product", args=[pk]))
-
     product = get_object_or_404(Product, pk=pk)
     basket = Basket.objects.filter(user=request.user, product=product).first()
 
@@ -36,7 +32,7 @@ def basket_add(request, pk):
 
     return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
 
-  
+
 @login_required
 def basket_remove(request, pk):
     basket_record = get_object_or_404(Basket, pk=pk)
@@ -47,7 +43,12 @@ def basket_remove(request, pk):
 @login_required
 def basket_edit(request, pk, quantity):
     if request.is_ajax():
-        print(f"{pk} - {quantity}")
+        try:
+            pk = int(pk)
+            quantity = int(quantity)
+        except Exception as exp:
+            print(f"Wrong input numbers! {exp}")
+            raise exp
         new_basket_item = Basket.objects.get(pk=int(pk))
 
         if quantity > 0:
@@ -63,4 +64,3 @@ def basket_edit(request, pk, quantity):
         result = render_to_string("basketapp/includes/inc_basket_list.html", content)
 
         return JsonResponse({"result": result})
-
