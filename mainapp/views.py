@@ -5,8 +5,6 @@ from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.shortcuts import get_object_or_404, render
 from django.utils import timezone
 
-from basketapp.models import Basket
-
 from .models import Contact, Product, ProductCategory
 
 
@@ -15,13 +13,6 @@ def main(request):
     products = Product.objects.filter(is_active=True, category__is_active=True)[:3]
     content = {"title": title, "products": products, "media_url": settings.MEDIA_URL}
     return render(request, "mainapp/index.html", content)
-
-
-def get_basket(user):
-    if user.is_authenticated:
-        return Basket.objects.filter(user=user)
-    else:
-        return []
 
 
 def get_hot_product():
@@ -37,10 +28,9 @@ def get_same_products(hot_product):
 def products(request, pk=None, page=1):
     title = "продукты"
     links_menu = ProductCategory.objects.filter(is_active=True)
-    basket = get_basket(request.user)
 
     if pk is not None:
-        if pk == '0':
+        if str(pk) == str(0):
             category = {"pk": 0, "name": "все"}
             products = Product.objects.filter(is_active=True, category__is_active=True).order_by("price")
         else:
@@ -63,7 +53,6 @@ def products(request, pk=None, page=1):
             "category": category,
             "products": products_paginator,
             "media_url": settings.MEDIA_URL,
-            "basket": basket,
         }
         return render(request, "mainapp/products_list.html", content)
     hot_product = get_hot_product()
@@ -73,7 +62,6 @@ def products(request, pk=None, page=1):
         "links_menu": links_menu,
         "same_products": same_products,
         "media_url": settings.MEDIA_URL,
-        "basket": basket,
         "hot_product": hot_product,
     }
     return render(request, "mainapp/products.html", content)
@@ -85,76 +73,9 @@ def product(request, pk):
         "title": title,
         "links_menu": ProductCategory.objects.filter(is_active=True),
         "product": get_object_or_404(Product, pk=pk),
-        "basket": get_basket(request.user),
         "media_url": settings.MEDIA_URL,
     }
     return render(request, "mainapp/product.html", content)
-
-
-from django.conf import settings
-from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
-from django.shortcuts import HttpResponseRedirect, get_object_or_404, render
-from django.template.loader import render_to_string
-from django.urls import reverse
-
-
-from basketapp.models import Basket
-from mainapp.models import Product
-
-
-
-@login_required
-def basket(request):
-    title = "корзина"
-    basket_items = Basket.objects.filter(user=request.user).order_by("product__category")
-    content = {"title": title, "basket_items": basket_items, "media_url": settings.MEDIA_URL}
-    return render(request, "basketapp/basket.html", content)
-
-
-@login_required
-def basket_add(request, pk):
-    if "login" in request.META.get("HTTP_REFERER"):
-        return HttpResponseRedirect(reverse("products:product", args=[pk]))
-
-    product = get_object_or_404(Product, pk=pk)
-    basket = Basket.objects.filter(user=request.user, product=product).first()
-
-    if not basket:
-        basket = Basket(user=request.user, product=product)
-
-    basket.quantity += 1
-    basket.save()
-
-    return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
-
-  
-@login_required
-def basket_remove(request, pk):
-    basket_record = get_object_or_404(Basket, pk=pk)
-    basket_record.delete()
-    return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
-
-
-@login_required
-def basket_edit(request, pk, quantity):
-    if request.is_ajax():
-        print(f"{pk} - {quantity}")
-        new_basket_item = Basket.objects.get(pk=int(pk))
-
-        if quantity > 0:
-            new_basket_item.quantity = quantity
-            new_basket_item.save()
-        else:
-            new_basket_item.delete()
-
-        basket_items = Basket.objects.filter(user=request.user).order_by("product__category")
-
-        content = {"basket_items": basket_items, "media_url": settings.MEDIA_URL}
-
-        result = render_to_string("basketapp/includes/inc_basket_list.html", content)
-
-        return JsonResponse({"result": result})
 
 
 def contact(request):
