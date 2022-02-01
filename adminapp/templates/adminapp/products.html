@@ -1,0 +1,77 @@
+{% extends 'adminapp/base.html' %}
+{% load static %}
+
+
+{% block content %}
+<div class="products_list">
+    <button class="new_product">
+        <a href={% url 'admin:product_create' category.pk %}>новый продукт</a>
+    </button>
+
+    {% for object in objects %}
+    <div class="product_record {% if not object.is_active %}not_active{% endif %}">
+        <img src="{{ media_url }}{{ object.image|default:'products_images/default.jpg' }}" alt="{{ object.name }}">
+        <div class="product_name">
+            {{ object.name|title }}
+        </div>
+        <div class="product_actions">
+            <button>
+                <a href={% url 'admin:product_read' object.pk %}>подробнее</a>
+            </button>
+            <button>
+                <a href={% url 'admin:product_update' object.pk %}>редактировать</a>
+            </button>
+            <button>
+                <a href={% url 'admin:product_delete' object.pk %}>удалить</a>
+            </button>
+        </div>
+        <div class="summary">
+            <b>цена</b>
+            <p>{{ object.price }} руб</p>
+            <b>количество</b>
+            <p>{{ object.quantity }}</p>
+        </div>
+        <div class="product_desc">
+            {{ object.short_desc|title }}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}{% extends 'mainapp/base.html' %}
+{% load static %}
+
+
+{% block menu %}
+<div class="hero">
+    <div class="header clearfix">
+        {% include 'mainapp/includes/inc_menu.html' %}
+    </div>
+    <h1>наши контакты</h1>
+    <p>сегодня: {{ visit_date|date:"l, j F, Y" }}</p>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="location">
+    {% for location in locations %}
+    <div class="location-1">
+        <i class="fa fa-map-marker fa-5x"></i>
+        <h4>{{ location.city }}</h4>
+        <div class="contacts">
+            <h5>Телефон</h5>
+            <p>{{ location.phone }}</p>
+        </div>
+        <div class="contacts">
+            <h5>Email</h5>
+            <p>{{ location.email }}</p>
+        </div>
+        <div class="contacts">
+            <h5>Адрес</h5>
+            <p>{{ location.address }}</p>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="clr"></div>
+{% endblock %}

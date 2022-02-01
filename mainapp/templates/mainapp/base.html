@@ -13,7 +13,7 @@
 
     {% block css %}
     <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
-    <link rel="stylesheet" href="{% static 'fonts/font-awesome/css/font-awesome.css' %}">
+    <link rel="stylesheet" href="{% static 'css/all.min.css' %}">
     {% endblock css %}
 
     {% block js %}
@@ -28,8 +28,8 @@
         {% endblock menu %}
 
         <div class="content">
-        {% block content %}
-        {% endblock content %}
+            {% block content %}
+            {% endblock content %}
         </div>
 
     </div>
@@ -52,7 +52,7 @@
                 </form>
             </div>
         </div>
-        <p class="small">&copy; GB 2017</p>
+        <p class="small">&copy; GB {% now "Y" %}</p>
         <div class="social">
             <a href="#" class="social1"></a>
             <a href="#" class="social2"></a>
