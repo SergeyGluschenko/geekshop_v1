@@ -31,6 +31,7 @@ def products(request, pk=None, page=1):
 
     if pk is not None:
         if str(pk) == str(0):
+
             category = {"pk": 0, "name": "все"}
             products = Product.objects.filter(is_active=True, category__is_active=True).order_by("price")
         else:
@@ -62,6 +63,7 @@ def products(request, pk=None, page=1):
         "links_menu": links_menu,
         "same_products": same_products,
         "media_url": settings.MEDIA_URL,
+
         "hot_product": hot_product,
     }
     return render(request, "mainapp/products.html", content)
