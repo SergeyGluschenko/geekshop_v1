@@ -1,6 +1,8 @@
 from django.conf import settings
 from django.db import models
 
+from django.shortcuts import get_object_or_404
+
 from mainapp.models import Product
 
 
@@ -61,4 +63,9 @@ class OrderItem(models.Model):
     quantity = models.PositiveIntegerField(verbose_name="количество", default=0)
 
     def get_product_cost(self):
+
         return self.product.price * self.quantity
+
+    @staticmethod
+    def get_item(pk):
+        return get_object_or_404(OrderItem, pk=pk)
