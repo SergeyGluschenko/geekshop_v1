@@ -113,6 +113,9 @@ class ProductCategoryDeleteView(LoginRequiredMixin, DeleteView):
         self.object = self.get_object()
         self.object.is_active = False
         self.object.save()
+        for item in self.object.product_set.all():
+            item.is_active = False
+            item.save()
         return HttpResponseRedirect(self.get_success_url())
 
 
