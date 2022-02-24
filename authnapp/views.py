@@ -55,6 +55,9 @@ def register(request):
     return render(request, "authnapp/register.html", content)
 
 
+from django.contrib.auth.decorators import login_required
+
+@login_required
 @transaction.atomic
 def edit(request):
     title = "редактирование"
